@@ -38,6 +38,11 @@ class Config:
         self.ip_address = self.PARSER.get('settings', 'ip_address', fallback='0.0.0.0')  # Default to 0.0.0.0 if not set
         self.port = int(self.PARSER.get('settings', 'port', fallback=5000))
 
+        self.db_host = os.getenv("DB_HOST") or self.PARSER.get('database', 'host', fallback='localhost')
+        self.db_user = os.getenv("DB_USER") or self.PARSER.get('database', 'user', fallback='root')
+        self.db_password = os.getenv("DB_PASSWORD") or self.PARSER.get('database', 'password', fallback='')
+        self.db_name = os.getenv("DB_NAME") or self.PARSER.get('database', 'name', fallback='driver_project')
+
         if not self.client_id or not self.client_secret:
                 raise ValueError("Client ID or Secret Key not found in environment or config.")
 
