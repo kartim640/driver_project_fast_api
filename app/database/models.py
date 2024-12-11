@@ -5,7 +5,6 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
-
 class User(Base):
     __tablename__ = "users"
 
@@ -20,16 +19,16 @@ class User(Base):
     # Relationship with files
     files = relationship("File", back_populates="owner")
 
-
 class File(Base):
     __tablename__ = "files"
 
     id = Column(Integer, primary_key=True, index=True)
-    filename = Column(String(255))
-    original_filename = Column(String(255))
-    file_path = Column(String(255))
-    file_size = Column(Float)  # in MB
+    filename = Column(String(255), nullable=False)
+    original_filename = Column(String(255), nullable=False)
+    file_path = Column(String(255), nullable=False)
+    preview_path = Column(String(255))  # New column
     file_type = Column(String(50))
+    file_size = Column(Float)  # in MB
     uploaded_at = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"))
 

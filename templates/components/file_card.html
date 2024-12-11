@@ -1,0 +1,22 @@
+<div class="file-card">
+    <div class="file-preview {{ file.file_type }}">
+        {% if file.file_type == 'image' %}
+            <img src="{{ file.preview_path }}" alt="{{ file.original_filename }}" class="preview-image"/>
+        {% else %}
+            <img src="/static/icons/{{ file.file_type }}.png" alt="{{ file.file_type }}" class="file-icon"/>
+        {% endif %}
+    </div>
+    <div class="file-info">
+        <h3 class="file-name" title="{{ file.original_filename }}">{{ file.original_filename }}</h3>
+        <p class="file-size">{{ "%.2f"|format(file.file_size) }} MB</p>
+        <p class="file-date">{{ file.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    </div>
+    <div class="file-actions">
+        <button onclick="window.location.href='/download/{{ file.id }}'" class="action-btn download-btn" title="Download">
+            <i class="fas fa-download"></i>
+        </button>
+        <button onclick="deleteFile({{ file.id }})" class="action-btn delete-btn" title="Delete">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+</div>

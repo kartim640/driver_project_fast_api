@@ -1,0 +1,24 @@
+<section class="files-section">
+    <h2>Recent Files</h2>
+    <div class="file-grid">
+        {% for file in files %}
+        <div class="file-card">
+            <div class="file-icon">
+                <i class="fas fa-file"></i>
+            </div>
+            <div class="file-info">
+                <h3 class="file-name">{{file.original_filename}}</h3>
+                <p class="file-size">{{file.file_size}} MB</p>
+            </div>
+            <div class="file-actions">
+                <button onclick="window.location.href='/download/{{file.id}}'" class="action-btn download-btn">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button onclick="deleteFile({{file.id}})" class="action-btn delete-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>

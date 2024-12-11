@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <!-- Corrected the link to the static CSS file -->
-    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h4>FastAPI with Google Oauth</h4>
+{% extends "base.html" %}
+
+{% block title %}Home - Cloud Storage{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="home-header">
+        <h4>Cloud Storage with Google OAuth</h4>
         <div class="img-box">
-          <!-- Corrected image source and added alt attribute -->
-          <img class="img" src="{{ url_for('static', path='icons/avatar.png') }}" alt="Avatar Image" />
+            <img src="{{ url_for('static', path='icons/avatar.png') }}" alt="Avatar Image" />
         </div>
-      </div>
-      <a href="/login" class="google-btn">
-        <div class="google-icon"></div>
-        <span class="btn-text">Sign in with Gmail</span>
-      </a>
     </div>
-  </body>
-</html>
+    <a href="/login" class="google-btn">
+        <div class="google-icon">
+            <i class="fab fa-google"></i>
+        </div>
+        <span class="btn-text">Sign in with Gmail</span>
+    </a>
+</div>
+{% endblock %}

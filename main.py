@@ -4,8 +4,8 @@ from app.config import Config
 if __name__ == "__main__":
     config = Config()
     uvicorn.run(
-        app="app.main:app",
-        host=config.ip_address,
-        port=config.port,
+        "app.main:app",  # This should match the import path to your FastAPI app
+        host=config.server_config['host'],
+        port=config.server_config['port'],
         reload=True
     )

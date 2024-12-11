@@ -1,0 +1,13 @@
+<section class="upload-section">
+    <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
+        <div class="drop-zone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag and drop files here or</p>
+            <input type="file" name="file" id="file-input" multiple hidden/>
+            <button type="button" class="browse-btn" onclick="document.getElementById('file-input').click()">
+                Browse Files
+            </button>
+            <p class="file-info">Maximum file size: 100MB</p>
+        </div>
+    </form>
+</section>
