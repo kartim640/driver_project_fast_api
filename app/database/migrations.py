@@ -4,7 +4,7 @@ from app.config import Config
 
 def run_migrations():
     config = Config()
-    engine = create_engine(config.database_url)
+    engine = create_engine(config.db.database_url)
 
     with engine.connect() as connection:
         # Add preview_path column if it doesn't exist

@@ -11,29 +11,20 @@ from app.database.models import Base
 import os
 from pathlib import Path
 
-# Configure logging
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('app.log')
-    ]
-)
-logger = logging.getLogger(__name__)
 
-# Create database tables
+logger = logging.getLogger(__name__)
 Base.metadata.create_all(bind=engine)
 
+config = Config()
 
 def create_app():
     app = FastAPI(
-        title="Cloud Storage",
-        description="A cloud storage application with Google OAuth",
-        version="1.0.0"
+        title=config.,
+        description="",
+        version=""
     )
 
-    config = Config()
+
 
     # Configure middleware
     app.add_middleware(
