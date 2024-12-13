@@ -4,19 +4,15 @@ pipeline {
     environment {
         PYTHON_VERSION = '3.12'
         PATH = "/usr/local/bin:/usr/bin:/bin:$PATH"
+        SUDO_PASS = credentials('SUDO_PASSWORD')
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checkout code from GitHub
-                checkout scm
-                
-                // Print information about the commit
-                sh '''
-                    echo "Branch: ${GIT_BRANCH}"
-                    echo "Commit: ${GIT_COMMIT}"
-                '''
+                // Explicitly specify your Git repository
+                git branch: 'master',
+                    url: 'https://github.com/kartim640/driver_project_fast_api.git'
             }
         }
         
@@ -25,6 +21,10 @@ pipeline {
                 script {
                     try {
                         sh '''
+                            # Install required packages
+                            echo $SUDO_PASS | sudo -S apt-get update
+                            echo $SUDO_PASS | sudo -S apt-get install -y python3-venv python3-pip
+                            
                             # Print Python version
                             echo "Python version:"
                             python3 --version
@@ -43,7 +43,12 @@ pipeline {
                             
                             # Install requirements
                             echo "Installing requirements..."
-                            pip install -r requirements.txt
+                            if [ -f "requirements.txt" ]; then
+                                pip install -r requirements.txt
+                            else
+                                echo "requirements.txt not found. Installing basic packages..."
+                                pip install fastapi uvicorn pytest
+                            fi
                             
                             # List installed packages
                             echo "Installed packages:"
@@ -89,16 +94,16 @@ pipeline {
                             # Activate virtual environment
                             . venv/bin/activate
                             
-                            # Check if port 5000 is in use
+                            # Check if port 8000 is in use
                             echo "Checking for existing process on port 8000..."
-                            if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null ; then
-                                echo "Port 5000 is in use. Stopping existing process..."
-                                lsof -Pi :5000 -sTCP:LISTEN -t | xargs kill -9 || true
+                            if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null ; then
+                                echo "Port 8000 is in use. Stopping existing process..."
+                                echo $SUDO_PASS | sudo -S kill -9 $(lsof -Pi :8000 -sTCP:LISTEN -t)
                             fi
                             
                             # Start the FastAPI application
                             echo "Starting FastAPI application..."
-                            nohup uvicorn main:app --host 0.0.0.0 --port 5000 --reload > app.log 2>&1 &
+                            nohup uvicorn main:app --host 0.0.0.0 --port 8000 --reload > app.log 2>&1 &
                             
                             # Wait for application to start
                             echo "Waiting for application to start..."
@@ -106,7 +111,7 @@ pipeline {
                             
                             # Health check
                             echo "Performing health check..."
-                            curl -f http://localhost:5000/health || {
+                            curl -f http://localhost:8000/health || {
                                 echo "Health check failed"
                                 exit 1
                             }
@@ -124,7 +129,6 @@ pipeline {
     
     post {
         always {
-            // Clean workspace
             cleanWs()
         }
         success {
