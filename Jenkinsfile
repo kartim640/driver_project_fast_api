@@ -89,16 +89,16 @@ pipeline {
                             # Activate virtual environment
                             . venv/bin/activate
                             
-                            # Check if port 8000 is in use
+                            # Check if port 5000 is in use
                             echo "Checking for existing process on port 8000..."
-                            if lsof -Pi :8000 -sTCP:LISTEN -t >/dev/null ; then
-                                echo "Port 8000 is in use. Stopping existing process..."
-                                lsof -Pi :8000 -sTCP:LISTEN -t | xargs kill -9 || true
+                            if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null ; then
+                                echo "Port 5000 is in use. Stopping existing process..."
+                                lsof -Pi :5000 -sTCP:LISTEN -t | xargs kill -9 || true
                             fi
                             
                             # Start the FastAPI application
                             echo "Starting FastAPI application..."
-                            nohup uvicorn main:app --host 0.0.0.0 --port 8000 --reload > app.log 2>&1 &
+                            nohup uvicorn main:app --host 0.0.0.0 --port 5000 --reload > app.log 2>&1 &
                             
                             # Wait for application to start
                             echo "Waiting for application to start..."
@@ -106,7 +106,7 @@ pipeline {
                             
                             # Health check
                             echo "Performing health check..."
-                            curl -f http://localhost:8000/health || {
+                            curl -f http://localhost:5000/health || {
                                 echo "Health check failed"
                                 exit 1
                             }
