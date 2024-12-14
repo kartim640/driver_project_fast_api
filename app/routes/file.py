@@ -1,14 +1,14 @@
 import os
-
 from fastapi import APIRouter, Request, Depends, UploadFile, File, HTTPException
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.database.database import get_db
+from app.database.models import User, File as FileModel  # Add this import
 from app.services.file_service import FileService
 from starlette.responses import JSONResponse, RedirectResponse, FileResponse
 from typing import Dict, Any
 import logging
-
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -33,7 +33,29 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
         if not user_id:
             return RedirectResponse('/')
 
-        # Get user's files and calculate storage
+        # Check if user is admin
+        if user.get('is_admin'):
+            # Get admin statistics
+            stats = {
+                'total_users': db.query(User).count(),
+                'total_files': db.query(FileModel).count(),
+                'total_storage_used': db.query(func.sum(User.storage_used)).scalar() or 0
+            }
+
+            # Get all users for admin dashboard
+            users = db.query(User).all()
+
+            return templates.TemplateResponse(
+                "dashboard_admin.html",
+                {
+                    "request": request,
+                    "user": user,
+                    "stats": stats,
+                    "users": users
+                }
+            )
+
+        # Regular user dashboard
         files = file_service.get_user_files(user_id, db)
         storage_used = sum(file.file_size for file in files)
         storage_limit = 1024  # 1GB
@@ -53,10 +75,14 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     except HTTPException:
         return RedirectResponse('/')
     except Exception as e:
+        logger.error(f"Dashboard error: {str(e)}")
         return templates.TemplateResponse(
             "error.html",
             {"request": request, "error": str(e)}
         )
+
+
+# ... rest of your file.py code ...
 
 
 @router.post("/upload")
