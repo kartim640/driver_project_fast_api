@@ -19,3 +19,4 @@ cryptography
 httpx
 itsdangerous
 PyJWT
+sentry-sdk
