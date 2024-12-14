@@ -20,3 +20,4 @@ httpx
 itsdangerous
 PyJWT
 sentry-sdk
+gunicorn
