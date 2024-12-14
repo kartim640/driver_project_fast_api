@@ -18,3 +18,4 @@ aiofiles
 cryptography
 httpx
 itsdangerous
+PyJWT
